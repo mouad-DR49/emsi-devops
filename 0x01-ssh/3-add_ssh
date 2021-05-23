@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+#Copy of ssh publickey to server
+ssh-copy-id -i ~/holberton.pub ubuntu@35.243.156.27
