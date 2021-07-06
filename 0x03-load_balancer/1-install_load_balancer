@@ -1,10 +1,41 @@
 #!/usr/bin/env bash
-#Bash script that configures a new Ubuntu machine to HAproxy
-sudo apt-get update
-sudo apt-get -y install software-properties-common
-sudo add-apt-repository -y ppa:vbernat/haproxy-2.0
-sudo apt-get update
-sudo apt-get -y install haproxy=2.0.\*
-sudo sed -i '35 a \\nfrontend http_front\n\tbind *:80\n\tmode http\n\tdefault_backend http_back' /etc/haproxy/haproxy.cfg
-sudo sed -i '40 a \\nbackend http_back\n\tbalance roundrobin\n\tserver web-01 35.243.156.27:80 check\n\tserver web-02 104.196.174.128:80 check' /etc/haproxy/haproxy.cfg
-sudo service haproxy restart
+# Install nginx web server
+
+apt-get update
+apt-get install -y haproxy
+
+echo 'ENABLED=1' >>/etc/default/haproxy
+
+printf %s "global
+  log 127.0.0.1 local0
+  log 127.0.0.1 local0 notice
+  maxconn       2048
+  user          haproxy
+  group         haproxy
+  daemon
+
+defaults
+  log     global
+  mode    http
+  option  httpclose
+  option  httplog
+  option  dontlognull
+  retries 3
+  option  redispatch
+	timeout connect 5s
+	timeout client  30s
+	timeout server  30s
+	timeout queue   10s
+
+frontend lb_serv
+  bind  0.0.0.0:80
+  mode  http
+  default_backend app_server
+
+backend app_server
+    balance roundrobin
+    server  3176-web-01 35.231.234.93 :80 check
+    server  3157-web-02 34.228.8.92   :80 check
+" >/etc/haproxy/haproxy.cfg
+
+service haproxy restart
