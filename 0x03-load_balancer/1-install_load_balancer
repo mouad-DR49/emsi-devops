@@ -34,8 +34,8 @@ frontend lb_serv
 
 backend app_server
     balance roundrobin
-    server  3176-web-01 35.231.234.93:80 check
-    server  3176-web-02 34.228.8.92:80 check
+    server  3176-web-01 35.231.234.93 :80 check
+    server  3157-web-02 34.228.8.92   :80 check
 " >/etc/haproxy/haproxy.cfg
 
 service haproxy restart
