@@ -6,7 +6,7 @@ apt-get install -y nginx
 
 printf %s "server {
   listen      80 default_server;
-  add_header  X-Served-By $HOSTNAME;
+  add_header  X-Served-By 3176-lb-01;
   root        /var/www/html;
   index       index.html index.htm;
 
